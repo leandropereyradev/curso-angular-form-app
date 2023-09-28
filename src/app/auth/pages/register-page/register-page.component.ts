@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as customValidators from 'src/app/shared/validators/validators';
+import { ValidatorsService } from 'src/app/shared/service/validators.service';
 
 @Component({
   templateUrl: './register-page.component.html',
@@ -11,25 +11,37 @@ export class RegisterPageComponent {
       '',
       [
         Validators.required,
-        Validators.pattern(customValidators.firstNameAndLastnamePattern),
+        Validators.pattern(this.validatorService.firstNameAndLastnamePattern),
       ],
     ],
     email: [
       '',
-      [Validators.required, Validators.pattern(customValidators.emailPattern)],
+      [
+        Validators.required,
+        Validators.pattern(this.validatorService.emailPattern),
+      ],
     ],
-    username: ['', [Validators.required, customValidators.cantBeStrider]],
+    username: ['', [Validators.required, this.validatorService.cantBeStrider]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     passwordConfirm: ['', [Validators.required]],
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private validatorService: ValidatorsService
+  ) {}
 
-  isValid(field: string) {
-    // TODO: desde servicio
+  isValidField(field: string) {
+    return this.validatorService.isValidField(this.myForm, field);
   }
 
   onSubmit() {
-    this.myForm.markAllAsTouched();
+    if (this.myForm.invalid) {
+      this.myForm.markAllAsTouched();
+
+      return;
+    }
+
+    console.log(this.myForm.value);
   }
 }
