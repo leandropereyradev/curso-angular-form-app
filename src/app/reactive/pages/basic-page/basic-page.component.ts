@@ -29,5 +29,7 @@ export class BasicPageComponent {
     if (this.myForm.invalid) return;
 
     console.log(this.myForm.value);
+
+    this.myForm.reset({ price: 0, inStorage: 0 });
   }
 }
